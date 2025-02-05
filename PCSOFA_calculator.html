@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCSOFA Score Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .calculator {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .parameter {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .result h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .interpretation {
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .minimal { background: #c6efce; color: #006100; }
+        .moderate { background: #ffeb9c; color: #9c6500; }
+        .critical-moderate { background: #ffd966; color: #7f6000; }
+        .critical-higher { background: #ffc7ce; color: #9c0006; }
+        .critical-max { background: #ff9999; color: #780000; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>PCSOFA Score Calculator</h1>
+        
+        <div class="parameter">
+            <label>Target PO2/SaO2 achieved with:</label>
+            <select id="gasExchange1">
+                <option value="">Select...</option>
+                <option value="0">O2 ≤ 2lit/min OR FiO2 ≤ 60% &/or PIP ≤ 16 &/or PEEP ≤ 6</option>
+                <option value="1">O2: 2 to 4 lit/min OR FiO2 61 to 80% &/or PIP 16 to 20 &/or PEEP 6 to 8</option>
+                <option value="2">O2: 4 to 6 lit/min OR FiO2 81 to 90% &/or PIP 21 to 24 &/or PEEP 8 to 9</option>
+                <option value="3">O2 ≥7lit/min OR FiO2 >91% &/or PIP ≥25 &/or PEEP ≥10</option>
+                <option value="4">Target pO2 not achievable</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Target PCO2/ETCO2 achieved with:</label>
+            <select id="gasExchange2">
+                <option value="">Select...</option>
+                <option value="0">No NIV or Ventilator</option>
+                <option value="1">HFNC OR NIV/ Ventilator Minute volume ≤300ml/kg</option>
+                <option value="2">NIV / Ventilator Minute volume 300 to 400ml/kg</option>
+                <option value="3">NIV / Ventilator Minute volume ≥ 400ml/kg</option>
+                <option value="4">Target pCO2 not achievable</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Haemodynamic targets (HR, BP, CVP) achieved with:</label>
+            <select id="haemodynamics">
+                <option value="">Select...</option>
+                <option value="0">No Supports</option>
+                <option value="1">Adr ≤ 0.05 &/or Dobut ≤ 5 &/or Dopam ≤5 &/or Milr ≤ 0.5 SNP &/or GTN < 5</option>
+                <option value="2">Adr 0.05 to 0.15 &/or Norad≤0.1 &/or Dopamine 10 &/or Dobutam 10 &/or Levose≤0.1 &/or Milr 0.5 to 0.7 &/or SNP/GTN 5 to 10</option>
+                <option value="3">Chest open &/or Adrenal> 0.15 &/or Norad > 0.1 &/or Vasop ≥0.01 &/or Dopamine >10 &/or Dobutam >10 &/or Levose≤0.1 &/or Milr ≥ 0.8 &/or SNP or GTN >10</option>
+                <option value="4">ECMO or Target haemodynamics not achievable</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Pulmonary Hypertension controlled with:</label>
+            <select id="pulmonaryHypertension">
+                <option value="">Select...</option>
+                <option value="0">No Supports</option>
+                <option value="1">Sildenafil (oral or iv) &/or Bosentan</option>
+                <option value="2">Nitric oxide &/or Sildenafil &/or Bosentan</option>
+                <option value="3">Riociguat &/or Nitric Oxide &/or Sildenafil &/or Bosentan</option>
+                <option value="4">Target Pulmonary pressure not achievable</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Rhythm Control</label>
+            <select id="rhythmControl">
+                <option value="">Select...</option>
+                <option value="0">No Supports</option>
+                <option value="1">Electrolytes correction/ AAI pacing</option>
+                <option value="2">AAI Pacing &/or Single Antiarrythmics</option>
+                <option value="3">DDD/VVI pacing &/or 2 or more Antiarrythmics</option>
+                <option value="4">Target Rhythm control not achievable</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Blood Products</label>
+            <select id="bloodProducts">
+                <option value="">Select...</option>
+                <option value="0">None</option>
+                <option value="1">PRBC ≤ 15ml/kg &/or Platel≤10ml/kg &/or FFP≤10ml/kg &/or Cryo ≤10ml/kg</option>
+                <option value="2">PRBC 15 to 30ml/kg &/or Platel 10 to 20ml/kg &/or FFP 10 to 20ml/kg &/or Cryo 10ml to 20/kg</option>
+                <option value="3">Re expn for Bleeding &/or PRBC 31 to 50ml/kg &/or Platel 21 to 30ml/kg &/or FFP 21 to 40ml/kg &/or Cryo 21ml to 30/kg</option>
+                <option value="4">Factor VII &/or PRBC >50ml/kg &/or Platel >30ml/kg &/or FFP >40ml/kg &/or Cryo >30/kg</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Convulsions &/or Altered GCS &/or Weakness:</label>
+            <select id="neurology">
+                <option value="">Select...</option>
+                <option value="0">None</option>
+                <option value="1">< 2 Neuro medications EEG and CT normal</option>
+                <option value="2">2 to 5 Neuro meds Abnormal EEG &/or CT brain &/or MRI brain</option>
+                <option value="3">> 5 Neuro medications</option>
+                <option value="4">> 6 neuro medications &/or Long stay > 3 weeks</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Target Fluid balance achieved with</label>
+            <select id="fluidBalance">
+                <option value="">Select...</option>
+                <option value="0">1 diuretics and no PD</option>
+                <option value="1">2 diuretics and No PD</option>
+                <option value="2">3 diuretics &/or PD</option>
+                <option value="3">3 diuretics including Torsemide &/or PD</option>
+                <option value="4">Target fluid balance not achieved</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Feed Tolerance</label>
+            <select id="feedTolerance">
+                <option value="">Select...</option>
+                <option value="0">No feed intolerance OR NPO for Extubation/Preop or day 1 post op</option>
+                <option value="1">Mild feed intolerance (1 or 2 vomits OR 10 to 20% of feed comes out as NGaspirates)</option>
+                <option value="2">Moderate feed intolerance (3 or 4 vomits OR 21 to 40% of feed comes out as NGaspirates)</option>
+                <option value="3">Severe feed intolerance (≥ 5 Vomiting OR ≥41% of feed comes out as NGaspirates)</option>
+                <option value="4">NPO more than 24 hours</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Age Group</label>
+            <select id="ageGroup">
+                <option value="">Select...</option>
+                <option value="1">< 1 month</option>
+                <option value="2">1-11 months</option>
+                <option value="3">1-2 years</option>
+                <option value="4">2-5 years</option>
+                <option value="5">5-12 years</option>
+                <option value="6">12-18 years</option>
+                <option value="7">≥ 18 years</option>
+            </select>
+        </div>
+
+        <div class="parameter">
+            <label>Creatinine Value</label>
+            <input type="number" id="creatinine" step="0.1" placeholder="Enter value">
+        </div>
+
+        <div class="parameter">
+            <label>Total Bilirubin (mg/dL)</label>
+            <input type="number" id="bilirubin" step="0.1" placeholder="Enter value">
+        </div>
+
+        <div class="parameter">
+            <label>Number of Abx + antifungals (other than i.v. Cefuroxime)</label>
+            <select id="infection">
+                <option value="">Select...</option>
+                <option value="0">0</option>
+                <option value="1">Single Antibiotics</option>
+                <option value="2">2 Abx</option>
+                <option value="3">Filgrastim &/or 3 or 4 abx &/or ET culture +ve</option>
+                <option value="4">Filgrastim &/or 5 or more abx &/or Bld cultre +ve &/or Mediatstinitis</option>
+            </select>
+        </div>
+
+        <div class="result">
+            <h2>Results</h2>
+            <div class="score" id="totalScore">Total Score: 0</div>
+            <div class="interpretation" id="interpretation">Please complete all fields</div>
+        </div>
+    </div>
+
+    <script>
+        function getCreatinineScore(age, value) {
+            if (!age || !value) return null;
+            
+            const ranges = {
+                1: [[0.8, 0], [0.9, 1], [1.1, 2], [1.5, 3], [Infinity, 4]],  // <1 month
+                2: [[0.3, 0], [0.4, 1], [0.7, 2], [1.1, 3], [Infinity, 4]],  // 1-11 months
+                3: [[0.4, 0], [0.5, 1], [1.0, 2], [1.4, 3], [Infinity, 4]],  // 1-2 years
+                4: [[0.6, 0], [0.8, 1], [1.5, 2], [2.2, 3], [Infinity, 4]],  // 2-5 years
+                5: [[0.7, 0], [1.0, 1], [1.7, 2], [2.5, 3], [Infinity, 4]],  // 5-12 years
+                6: [[1.0, 0], [1.6, 1], [2.8, 2], [4.1, 3], [Infinity, 4]],  // 12-18 years
+                7: [[1.2, 0], [1.9, 1], [3.4, 2], [4.9, 3], [Infinity, 4]]   // ≥18 years
+            };
+
+            const ageRanges = ranges[age];
+            for (let [threshold, score] of ageRanges) {
+                if (value < threshold) return score;
+            }
+            return 4;
+        }
+
+        function getBilirubinScore(value) {
+            if (!value) return null;
+            if (value < 1.2) return 0;
+            if (value < 1.9) return 1;
+            if (value < 5.9) return 2;
+            if (value < 11.9) return 3;
+            return 4;
+        }
+        function calculateScore() {
+    const selects = [
+        { id: 'gasExchange1', label: "Target PO2/SaO2" },
+        { id: 'gasExchange2', label: "Target PCO2/ETCO2" },
+        { id: 'haemodynamics', label: "Haemodynamic Support" },
+        { id: 'pulmonaryHypertension', label: "Pulmonary Hypertension" },
+        { id: 'rhythmControl', label: "Rhythm Control" },
+        { id: 'bloodProducts', label: "Blood Products" },
+        { id: 'neurology', label: "Neurological Status" },
+        { id: 'fluidBalance', label: "Fluid Balance" },
+        { id: 'feedTolerance', label: "Feed Tolerance" },
+        { id: 'infection', label: "Infection Control" },
+        { id: 'ageGroup', label: "Age Group" }
+    ];
+
+    let totalScore = 0;
+    let selectedOptions = [];
+
+    selects.forEach(({ id, label }) => {
+        const selectElement = document.getElementById(id);
+        const selectedText = selectElement.options[selectElement.selectedIndex].text;
+        const value = parseInt(selectElement.value || "0");
+
+        totalScore += value;
+        selectedOptions.push({ label, selectedText, score: value });
+    });
+
+    // Handle Creatinine Score
+    const ageGroup = parseInt(document.getElementById('ageGroup').value);
+    const creatinineElement = document.getElementById('creatinine');
+    const creatinineValue = parseFloat(creatinineElement.value);
+    const creatinineScore = getCreatinineScore(ageGroup, creatinineValue);
+    
+    if (!isNaN(creatinineValue)) {
+        totalScore += creatinineScore;
+        selectedOptions.push({ label: "Creatinine", selectedText: `${creatinineValue} mg/dL`, score: creatinineScore });
+    }
+
+    // Handle Bilirubin Score
+    const bilirubinElement = document.getElementById('bilirubin');
+    const bilirubinValue = parseFloat(bilirubinElement.value);
+    const bilirubinScore = getBilirubinScore(bilirubinValue);
+    
+    if (!isNaN(bilirubinValue)) {
+        totalScore += bilirubinScore;
+        selectedOptions.push({ label: "Total Bilirubin", selectedText: `${bilirubinValue} mg/dL`, score: bilirubinScore });
+    }
+
+    // Interpretation Logic
+    let interpretation = "";
+    let className = "";
+    if (totalScore < 5) {
+        interpretation = "Stable with minimal support";
+        className = "minimal";
+    } else if (totalScore <= 10) {
+        interpretation = "Stable with moderate support";
+        className = "moderate";
+    } else if (totalScore <= 18) {
+        interpretation = "Critical with moderate support or stable with higher supports";
+        className = "critical-moderate";
+    } else if (totalScore <= 25) {
+        interpretation = "Critical with higher support";
+        className = "critical-higher";
+    } else {
+        interpretation = "Critical despite maximum support";
+        className = "critical-max";
+    }
+
+    // Update Score and Interpretation
+    document.getElementById('totalScore').innerText = `Total Score: ${totalScore}`;
+    const interpretationElement = document.getElementById('interpretation');
+    interpretationElement.innerText = interpretation;
+    interpretationElement.className = `interpretation ${className}`;
+
+    // Ensure selectedOptionsTable exists, or create it
+    let selectedOptionsDiv = document.getElementById('selectedOptions');
+    if (!selectedOptionsDiv) {
+        selectedOptionsDiv = document.createElement('div');
+        selectedOptionsDiv.id = 'selectedOptions';
+        selectedOptionsDiv.style.marginTop = "20px";
+        document.querySelector('.result').appendChild(selectedOptionsDiv);
+    }
+
+    // Generate table HTML
+    let tableHTML = `<h3>Selected Options</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+                <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd;">Parameter</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd;">Selection</th>
+                <th style="text-align: center; padding: 8px; border-bottom: 2px solid #ddd;">Score</th>
+            </tr>`;
+
+    selectedOptions.forEach(({ label, selectedText, score }) => {
+        tableHTML += `
+            <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${label}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${selectedText}</td>
+                <td style="text-align: center; padding: 8px; border-bottom: 1px solid #ddd;">${score}</td>
+            </tr>`;
+    });
+
+    tableHTML += `</table>`;
+    
+    // Insert table into the results section
+    selectedOptionsDiv.innerHTML = tableHTML;
+}
+
+// Attach event listeners
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("select, input").forEach(element => {
+        element.addEventListener("change", calculateScore);
+        element.addEventListener("input", calculateScore);
+    });
+});
+
+
+
+
+</script>
+</body>
+</html>
