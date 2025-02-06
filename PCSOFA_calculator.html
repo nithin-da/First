@@ -338,28 +338,15 @@
         document.querySelector('.result').appendChild(selectedOptionsDiv);
     }
 
-    // Generate table HTML
-    let tableHTML = `<h3>Selected Options</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-                <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd;">Parameter</th>
-                <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd;">Selection</th>
-                <th style="text-align: center; padding: 8px; border-bottom: 2px solid #ddd;">Score</th>
-            </tr>`;
+    // Generate plain text output
+    let plainTextOutput = `Selected Options:\n\n`;
 
     selectedOptions.forEach(({ label, selectedText, score }) => {
-        tableHTML += `
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${label}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${selectedText}</td>
-                <td style="text-align: center; padding: 8px; border-bottom: 1px solid #ddd;">${score}</td>
-            </tr>`;
+        plainTextOutput += `${label}: ${selectedText}\nScore: ${score}\n\n`;
     });
 
-    tableHTML += `</table>`;
-    
-    // Insert table into the results section
-    selectedOptionsDiv.innerHTML = tableHTML;
+    // Insert plain text into the results section
+    selectedOptionsDiv.innerText = plainTextOutput;
 }
 
 // Attach event listeners
@@ -369,10 +356,6 @@ document.addEventListener("DOMContentLoaded", function() {
         element.addEventListener("input", calculateScore);
     });
 });
-
-
-
-
 </script>
 </body>
 </html>
