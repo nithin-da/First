@@ -224,6 +224,7 @@
             <div class="score" id="totalScore">Total Score: 0</div>
             <div class="interpretation" id="interpretation">Please complete all fields</div>
         </div>
+        <button onclick="sendDataToSheet()" style="display: block; margin: 20px auto; padding: 12px 24px; font-size: 16px; font-weight: bold; color:#34495e; background: white; border: 2px solid #ccc; border-radius: 8px; cursor: pointer;">Submit to Google Sheet</button>
     </div>
 
     <script>
@@ -256,7 +257,7 @@
             return 4;
         }
         function calculateScore() {
-    const selects = [
+        const selects = [
         { id: 'gasExchange1', label: "Target PO2/SaO2" },
         { id: 'gasExchange2', label: "Target PCO2/ETCO2" },
         { id: 'haemodynamics', label: "Haemodynamic Support" },
@@ -362,15 +363,39 @@
     selectedOptionsDiv.innerHTML = tableHTML;
 }
 
-// Attach event listeners
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("select, input").forEach(element => {
-        element.addEventListener("change", calculateScore);
-        element.addEventListener("input", calculateScore);
+    function sendDataToSheet() {
+        const data = {
+            gasExchange1: document.getElementById('gasExchange1').value,
+            gasExchange2: document.getElementById('gasExchange2').value,
+            haemodynamics: document.getElementById('haemodynamics').value,
+            pulmonaryHypertension: document.getElementById('pulmonaryHypertension').value,
+            rhythmControl: document.getElementById('rhythmControl').value,
+            bloodProducts: document.getElementById('bloodProducts').value,
+            neurology: document.getElementById('neurology').value,
+            fluidBalance: document.getElementById('fluidBalance').value,
+            feedTolerance: document.getElementById('feedTolerance').value,
+            infection: document.getElementById('infection').value,
+            ageGroup: document.getElementById('ageGroup').value,
+            creatinine: document.getElementById('creatinine').value,
+            bilirubin: document.getElementById('bilirubin').value,
+            totalScore: document.getElementById('totalScore').innerText.replace("Total Score: ", "")
+        };
+
+        fetch("YOUR_DEPLOYED_SCRIPT_URL", {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(() => alert("Data sent successfully!"));
+    }
+
+    // Attach event listeners for score calculation
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("select, input").forEach(element => {
+            element.addEventListener("change", calculateScore);
+            element.addEventListener("input", calculateScore);
+        });
     });
-});
-
-
 
 
 </script>
