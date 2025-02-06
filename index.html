@@ -224,6 +224,9 @@
             <div class="score" id="totalScore">Total Score: 0</div>
             <div class="interpretation" id="interpretation">Please complete all fields</div>
         </div>
+        <div>
+        <button onclick="sendDataToSheet()" style="display: block; margin: 20px auto; padding: 12px 24px; font-size: 16px; font-weight: bold; color:#34495e; background: white; border: 2px solid #ccc; border-radius: 8px; cursor: pointer;">Submit to Google Sheet</button>
+        </div>
     </div>
 
     <script>
@@ -356,6 +359,32 @@ document.addEventListener("DOMContentLoaded", function() {
         element.addEventListener("input", calculateScore);
     });
 });
+function sendDataToSheet() {
+    const data = {
+        gasExchange1: document.getElementById('gasExchange1').value,
+        gasExchange2: document.getElementById('gasExchange2').value,
+        haemodynamics: document.getElementById('haemodynamics').value,
+        pulmonaryHypertension: document.getElementById('pulmonaryHypertension').value,
+        rhythmControl: document.getElementById('rhythmControl').value,
+        bloodProducts: document.getElementById('bloodProducts').value,
+        neurology: document.getElementById('neurology').value,
+        fluidBalance: document.getElementById('fluidBalance').value,
+        feedTolerance: document.getElementById('feedTolerance').value,
+        infection: document.getElementById('infection').value,
+        ageGroup: document.getElementById('ageGroup').value,
+        creatinine: document.getElementById('creatinine').value,
+        bilirubin: document.getElementById('bilirubin').value,
+        totalScore: document.getElementById('totalScore').innerText.replace("Total Score: ", "")
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbxRkoclT-Hm3f_BHMs32dgRJZb1LVBfTkLjiA9INkxrioFwyL7cg1khYPnTyl_lBgiw0A/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    }).then(() => alert("Data sent successfully!"));
+}
+
 </script>
 </body>
 </html>
