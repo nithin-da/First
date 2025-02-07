@@ -225,7 +225,7 @@
             <div class="interpretation" id="interpretation">Please complete all fields</div>
         </div>
         <div>
-        <button onclick="sendDataToSheet()" style="display: block; margin: 20px auto; padding: 12px 24px; font-size: 16px; font-weight: bold; color:#34495e; background: white; border: 2px solid #ccc; border-radius: 8px; cursor: pointer;">Submit to Google Sheet</button>
+        <button onclick="handleButtonClick()" style="display: block; margin: 20px auto; padding: 12px 24px; font-size: 16px; font-weight: bold; color:#34495e; background: white; border: 2px solid #ccc; border-radius: 8px; cursor: pointer;">Copy & Submit</button>
         </div>
     </div>
 
@@ -359,6 +359,25 @@ document.addEventListener("DOMContentLoaded", function() {
         element.addEventListener("input", calculateScore);
     });
 });
+        
+function handleButtonClick(){
+            sendDataToSheet();
+            copyText();}
+        
+function copyText() {
+    // Get the text from the results section
+    let textToCopy = document.getElementById("selectedOptionsDiv").innerText;
+
+    // Copy text to clipboard using the Clipboard API
+    navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            console.log("Copied to clipboard!");
+            alert("Text copied successfully!");
+        })
+        .catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+}
 function sendDataToSheet() {
     const data = {
         gasExchange1: document.getElementById('gasExchange1').value,
