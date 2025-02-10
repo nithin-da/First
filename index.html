@@ -64,6 +64,48 @@
             text-align: center;
             font-weight: bold;
         }
+        button {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #34495e;
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    background: #f5f5f5;
+    transform: translateY(-1px);
+}
+
+button.success {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+button.success span {
+    display: inline-block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
         .minimal { background: #c6efce; color: #006100; }
         .moderate { background: #ffeb9c; color: #9c6500; }
         .critical-moderate { background: #ffd966; color: #7f6000; }
@@ -360,9 +402,17 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
         
-function handleButtonClick(){
-            sendDataToSheet();
-            copyText();}
+function handleButtonClick() {
+    const button = document.querySelector('button');
+    
+    // Copy text and send data
+    copyText();
+    sendDataToSheet();
+    
+    // Add success animation
+    button.classList.add('success');
+    button.innerHTML = `<span>✓ Sent!</span>`;
+}
         
 function copyText() {
     // Get the text from the results section
@@ -372,7 +422,6 @@ function copyText() {
     navigator.clipboard.writeText(textToCopy)
         .then(() => {
             console.log("Copied to clipboard!");
-            alert("Text copied successfully!");
         })
         .catch(err => {
             console.error("Failed to copy text: ", err);
@@ -401,7 +450,7 @@ function sendDataToSheet() {
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
-    }).then(() => alert("Data sent successfully!"));
+    })
 }
 
 </script>
